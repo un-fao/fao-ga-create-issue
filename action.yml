@@ -12,6 +12,7 @@ inputs:
   token:
     description: Your Github PAT, defaults to actions token
     required: false
+    default: ${{ github.token }}
   owner:
     description: Repo Owner, if not set implied by context.
     required: false
@@ -20,10 +21,22 @@ inputs:
     required: false
   title:
     description: Issue title
-    required: true
+    required: false
+    default: |
+      [${{ github.workflow }}] failure detected
   body:
     description: Body content of issue
     required: false
+    default: |
+      ## Failure Report:
+      
+      > [!IMPORTANT]
+      > Details on failed run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      - Author: @${{ github.triggering_actor }}
+      - Branch: `${{ github.ref }}`
+      - Commit: ${{ github.sha }}
+      - Workflow Path: `${{ github.workflow_ref }}`
   milestone: 
     description: Milestone associated with issue
     required: false
@@ -33,6 +46,7 @@ inputs:
   assignees:
     description: CSV of github usernames to assign (e.x. 'dacbd,nlf')
     required: false
+    default: ${{ github.actor }}
 outputs:
   json:
     description: The JSON for the new created issue returned from the GitHub API
